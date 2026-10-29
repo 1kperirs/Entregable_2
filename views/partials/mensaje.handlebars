@@ -1,0 +1,14 @@
+{{!-- Un mensaje del chat. Recibe: nombre, publicidad, mensaje, hora --}}
+<li class="msg" data-autor="{{nombre}}">
+  <div class="msg__avatar">{{inicial}}</div>
+  <div class="msg__burbuja">
+    <div class="msg__cabecera">
+      <span class="msg__autor">{{nombre}}</span>
+      <time class="msg__hora">{{hora}}</time>
+    </div>
+    {{#if publicidad}}
+      <span class="msg__publicidad">📢 {{publicidad}}</span>
+    {{/if}}
+    <p class="msg__texto">{{mensaje}}</p>
+  </div>
+</li>
