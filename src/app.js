@@ -40,6 +40,9 @@ io.on('connection', (socket) => {
     io.emit('chat:mensaje', msg); // a TODOS, incluido quien lo escribe
   });
 
+  // "Fulano está escribiendo..." a todos menos a quien escribe
+  socket.on('chat:escribiendo', (nombre) => socket.broadcast.emit('chat:escribiendo', nombre));
+
   socket.on('disconnect', () => io.emit('chat:conectados', io.engine.clientsCount));
 });
 
