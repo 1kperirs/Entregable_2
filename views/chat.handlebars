@@ -1,44 +1,77 @@
 <main class="chat">
 
   <header class="chat__header">
-    <div>
-      <h1 class="chat__titulo">💬 Chat en vivo</h1>
-      <p class="chat__sub">Los mensajes se ven para todos los conectados</p>
+    <div class="chat__marca">
+      <div class="chat__logo">💬</div>
+      <div>
+        <h1 class="chat__titulo">Chat en vivo</h1>
+        <p class="chat__sub" id="estado">Los mensajes se ven para todos los conectados</p>
+      </div>
     </div>
-    <span class="chat__online"><span class="punto"></span> <span id="conectados">{{conectados}}</span> en línea</span>
+    <div class="chat__acciones">
+      <span class="chat__online"><span class="punto" id="punto"></span> <span id="conectados">{{conectados}}</span> en línea</span>
+      <button type="button" class="btn-icono" id="btnTema" aria-label="Cambiar tema" title="Cambiar tema">
+        <svg class="icono-sol" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5 1.5 3h-3L12 2zm0 20-1.5-3h3L12 22zM2 12l3-1.5v3L2 12zm20 0-3 1.5v-3L22 12zM4.9 4.9l3.2 1.1-2.1 2.1-1.1-3.2zm14.2 14.2-3.2-1.1 2.1-2.1 1.1 3.2zM4.9 19.1 6 15.9l2.1 2.1-3.2 1.1zM19.1 4.9 18 8.1 15.9 6l3.2-1.1z"/></svg>
+        <svg class="icono-luna" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M20 15.3A8.5 8.5 0 0 1 8.7 4a8.5 8.5 0 1 0 11.3 11.3z"/></svg>
+      </button>
+    </div>
   </header>
 
   {{!-- Lista de mensajes (los que ya existen se pintan desde el servidor) --}}
-  <ul class="chat__mensajes" id="listaMensajes">
-    {{#each mensajes}}
-      {{> mensaje}}
-    {{else}}
-      <li class="chat__vacio" id="vacio">Aún no hay mensajes. ¡Escribe el primero! ✨</li>
-    {{/each}}
-  </ul>
+  <div class="chat__cuerpo">
+    <ul class="chat__mensajes" id="listaMensajes">
+      <li class="chat__separador"><span>Hoy</span></li>
+      {{#each mensajes}}
+        {{> mensaje}}
+      {{else}}
+        <li class="chat__vacio" id="vacio">
+          <div class="chat__vacio-icono">👋</div>
+          <strong>Aún no hay mensajes</strong>
+          <span>¡Escribe el primero! ✨</span>
+        </li>
+      {{/each}}
+    </ul>
+
+    <div class="chat__escribiendo" id="escribiendo" hidden>
+      <span class="puntos"><i></i><i></i><i></i></span>
+      <span id="escribiendoTexto"></span>
+    </div>
+
+    <button type="button" class="chat__bajar" id="btnBajar" aria-label="Ir al último mensaje" hidden>
+      <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 16.5 5 9.5l1.4-1.4 5.6 5.6 5.6-5.6L19 9.5z"/></svg>
+      <span class="chat__bajar-nuevos" id="nuevos" hidden>0</span>
+    </button>
+  </div>
 
   {{!-- Formulario --}}
   <form class="chat__form" id="formChat" autocomplete="off">
     <div class="chat__fila">
-      <div class="campo">
-        <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" maxlength="30" required>
-      </div>
-      <div class="campo">
-        <label for="publicidad">Publicidad</label>
-        <input type="text" id="publicidad" name="publicidad" placeholder="Ej: 20% OFF hoy (opcional)" maxlength="60">
-      </div>
+      <label class="campo">
+        <span class="campo__icono" aria-hidden="true">👤</span>
+        <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" maxlength="30" required aria-label="Nombre">
+      </label>
+      <label class="campo">
+        <span class="campo__icono" aria-hidden="true">📢</span>
+        <input type="text" id="publicidad" name="publicidad" placeholder="Publicidad (opcional) · Ej: 20% OFF hoy" maxlength="60" aria-label="Publicidad">
+      </label>
     </div>
 
-    <div class="campo campo--mensaje">
-      <label for="mensaje">Mensaje</label>
-      <div class="chat__enviar">
-        <textarea id="mensaje" name="mensaje" rows="1" placeholder="Escribe un mensaje..." maxlength="500" required></textarea>
-        <button type="submit" class="btn" aria-label="Enviar">
-          <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
-        </button>
+    <div class="chat__enviar">
+      <div class="emojis">
+        <button type="button" class="btn-icono btn-icono--suave" id="btnEmoji" aria-label="Emojis" aria-expanded="false">😊</button>
+        <div class="emojis__panel" id="panelEmojis" hidden>
+          {{!-- Se rellena desde chat.js --}}
+        </div>
       </div>
+      <div class="chat__caja">
+        <textarea id="mensaje" name="mensaje" rows="1" placeholder="Escribe un mensaje..." maxlength="500" required aria-label="Mensaje"></textarea>
+        <span class="chat__contador" id="contador"></span>
+      </div>
+      <button type="submit" class="btn" id="btnEnviar" aria-label="Enviar" disabled>
+        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
     </div>
+    <p class="chat__ayuda"><kbd>Enter</kbd> para enviar · <kbd>Shift</kbd> + <kbd>Enter</kbd> nueva línea</p>
   </form>
 
 </main>
@@ -46,15 +79,15 @@
 {{!-- Plantilla del lado del cliente para los mensajes nuevos que llegan en vivo.
       El "\" evita que el servidor la procese: llega intacta al navegador. --}}
 <script id="tplMensaje" type="text/x-handlebars-template">
-  <li class="msg \{{#if propio}}msg--propio\{{/if}}">
+  <li class="msg \{{#if propio}}msg--propio\{{/if}}" data-autor="\{{nombre}}">
     <div class="msg__avatar">\{{inicial}}</div>
     <div class="msg__burbuja">
       <div class="msg__cabecera">
         <span class="msg__autor">\{{#if propio}}Tú\{{else}}\{{nombre}}\{{/if}}</span>
-        <time class="msg__hora">\{{hora}}</time>
       </div>
       \{{#if publicidad}}<span class="msg__publicidad">📢 \{{publicidad}}</span>\{{/if}}
       <p class="msg__texto">\{{mensaje}}</p>
+      <time class="msg__hora">\{{hora}}</time>
     </div>
   </li>
 </script>
